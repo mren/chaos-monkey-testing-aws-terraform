@@ -1,0 +1,20 @@
+{
+  "author": "",
+  "description": "",
+  "devDependencies": {
+    "eslint": "3.9.1",
+    "eslint-config-airbnb-base": "9.0.0",
+    "eslint-plugin-import": "2.0.1"
+  },
+  "license": "ISC",
+  "main": "lambda-handler.js",
+  "name": "aws-chaos-testing",
+  "scripts": {
+    "lint": "eslint .",
+    "test": "npm run lint"
+  },
+  "version": "1.0.0",
+  "dependencies": {
+    "aws-sdk": "2.6.13"
+  }
+}
