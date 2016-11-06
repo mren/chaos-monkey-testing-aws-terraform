@@ -1,5 +1,8 @@
 {
-  "author": "",
+  "author": "mren",
+  "dependencies": {
+    "aws-sdk": "2.6.13"
+  },
   "description": "",
   "devDependencies": {
     "eslint": "3.9.1",
@@ -9,12 +12,13 @@
   "license": "ISC",
   "main": "lambda-handler.js",
   "name": "aws-chaos-testing",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mren/chaos-monkey-testing-aws-terraform.git"
+  },
   "scripts": {
     "lint": "eslint .",
     "test": "npm run lint"
   },
-  "version": "1.0.0",
-  "dependencies": {
-    "aws-sdk": "2.6.13"
-  }
+  "version": "1.0.0"
 }
