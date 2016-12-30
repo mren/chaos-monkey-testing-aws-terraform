@@ -36,7 +36,7 @@ describe('terminate random instance', () => {
     });
   });
 
-  it('should kill random instance', sinon.test(function (done) {
+  it('should kill random instance', sinon.test(function sinonStubWrapper(done) {
     const settings = { probability: 1, region: 'region' };
     const reservations = [
       { Instances: [{ InstanceId: 'instanceId1' }] },
@@ -54,7 +54,7 @@ describe('terminate random instance', () => {
     });
   }));
 
-  it('should kill another random instance', sinon.test(function (done) {
+  it('should kill another random instance', sinon.test(function sinonStubWrapper(done) {
     const settings = { probability: 1, region: 'region' };
     const reservations = [
       { Instances: [{ InstanceId: 'instanceId1' }] },

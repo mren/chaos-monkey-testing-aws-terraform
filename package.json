@@ -18,7 +18,7 @@
     "url": "git://github.com/mren/chaos-monkey-testing-aws-terraform.git"
   },
   "scripts": {
-    "lint": "eslint .",
+    "lint": "eslint --max-warnings 0 .",
     "mocha": "mocha --recursive",
     "test": "npm run lint && npm run mocha"
   },
