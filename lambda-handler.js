@@ -3,7 +3,7 @@ const aws = require('aws-sdk');
 const terminateRandomInstance = require('./terminate-random-instance');
 
 const config = {
-  probability: Number(process.env.PROBABILITY),
+  terminationProbability: Number(process.env.TERMINATION_PROBABILITY),
   region: process.env.REGION,
 };
 

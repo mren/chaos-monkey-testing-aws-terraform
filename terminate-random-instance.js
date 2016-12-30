@@ -9,10 +9,10 @@ const log = console.log;
 function terminateRandomInstance(aws, settings, cb) {
   log('terminateRandomInstance', JSON.stringify(settings));
   assert(aws && aws.EC2, 'Should have aws.EC2.');
-  assert(Number.isFinite(settings.probability), 'Should have probability in settings.');
+  assert(Number.isFinite(settings.terminationProbability), 'Should have termination probability.');
   assert(settings.region, 'Should have region in settings.');
 
-  if (Math.random() >= settings.probability) {
+  if (Math.random() >= settings.terminationProbability) {
     log('No random instance will be terminated. Aborting.');
     return cb();
   }

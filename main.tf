@@ -39,8 +39,8 @@ resource "aws_lambda_function" "lambda" {
 
   environment {
     variables {
-      PROBABILITY = "${var.termination_probability}"
-      REGION      = "${data.aws_region.current.name}"
+      TERMINATION_PROBABILITY = "${var.termination_probability}"
+      REGION                  = "${data.aws_region.current.name}"
     }
   }
 }
