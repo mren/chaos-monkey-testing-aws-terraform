@@ -23,7 +23,7 @@ describe('terminate random instance', () => {
 
   it('should kill instance', (done) => {
     const settings = { terminationProbability: 1, region: 'region' };
-    const reservations = [{ Instances: [{ InstanceId: 'instanceId' }] }];
+    const reservations = [{ Instances: [{ InstanceId: 'instanceId', State: { Name: 'running' } }] }];
     const ec2 = {
       describeInstances: sinon.stub().yields(null, { Reservations: reservations }),
       terminateInstances: sinon.stub().yields(null, 'done'),
@@ -39,8 +39,8 @@ describe('terminate random instance', () => {
   it('should kill random instance', sinon.test(function sinonStubWrapper(done) {
     const settings = { terminationProbability: 1, region: 'region' };
     const reservations = [
-      { Instances: [{ InstanceId: 'instanceId1' }] },
-      { Instances: [{ InstanceId: 'instanceId2' }] },
+      { Instances: [{ InstanceId: 'instanceId1', State: { Name: 'running' } }] },
+      { Instances: [{ InstanceId: 'instanceId2', State: { Name: 'running' } }] },
     ];
     const ec2 = {
       describeInstances: sinon.stub().yields(null, { Reservations: reservations }),
@@ -57,8 +57,8 @@ describe('terminate random instance', () => {
   it('should kill another random instance', sinon.test(function sinonStubWrapper(done) {
     const settings = { terminationProbability: 1, region: 'region' };
     const reservations = [
-      { Instances: [{ InstanceId: 'instanceId1' }] },
-      { Instances: [{ InstanceId: 'instanceId2' }] },
+      { Instances: [{ InstanceId: 'instanceId1', State: { Name: 'running' } }] },
+      { Instances: [{ InstanceId: 'instanceId2', State: { Name: 'running' } }] },
     ];
     const ec2 = {
       describeInstances: sinon.stub().yields(null, { Reservations: reservations }),
@@ -75,7 +75,7 @@ describe('terminate random instance', () => {
   it('should have a dry run mode', (done) => {
     const settings = { terminationProbability: 1, region: 'region', dryRun: true };
     const reservations = [
-      { Instances: [{ InstanceId: 'instanceId' }] },
+      { Instances: [{ InstanceId: 'instanceId', State: { Name: 'running' } }] },
     ];
     const ec2 = {
       describeInstances: sinon.stub().yields(null, { Reservations: reservations }),
@@ -84,6 +84,22 @@ describe('terminate random instance', () => {
     const aws = { EC2: sinon.stub().returns(ec2) };
     terminateRandomInstance(aws, settings, (err, result) => {
       assert.strictEqual(result, 'dry-run');
+      sinon.assert.notCalled(ec2.terminateInstances);
+      done(err);
+    });
+  });
+
+  it('should filter non running instances', (done) => {
+    const settings = { terminationProbability: 1, region: 'region' };
+    const reservations = [
+      { Instances: [{ InstanceId: 'instanceId', State: { Name: 'terminated' } }] },
+    ];
+    const ec2 = {
+      describeInstances: sinon.stub().yields(null, { Reservations: reservations }),
+      terminateInstances: sinon.stub().yields(),
+    };
+    const aws = { EC2: sinon.stub().returns(ec2) };
+    terminateRandomInstance(aws, settings, (err) => {
       sinon.assert.notCalled(ec2.terminateInstances);
       done(err);
     });

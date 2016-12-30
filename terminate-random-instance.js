@@ -31,8 +31,9 @@ function terminateRandomInstance(aws, settings, cb) {
       return cb(err);
     }
     const instances = flatten(data.Reservations.map(reservation => reservation.Instances));
-    const instanceIds = instances.map(instance => instance.InstanceId);
-    log(`Found ${instanceIds.length} instances (${instanceIds.join(', ')}).`);
+    const runningInstances = instances.filter(instance => instance.State.Name === 'running');
+    const instanceIds = runningInstances.map(instance => instance.InstanceId);
+    log(`Found ${instanceIds.length} running instances (${instanceIds.join(', ')}).`);
 
     if (instanceIds.length === 0) {
       log('No instances are available. Aborting.');
