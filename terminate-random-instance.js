@@ -3,6 +3,14 @@ const assert = require('assert');
 const flatten = arrays => [].concat.apply([], arrays);
 const getRandom = array => array[Math.floor(Math.random() * array.length)];
 
+const getInstanceById = (instanceId, instances) => instances
+  .find(instance => instance.InstanceId === instanceId);
+
+const getTag = (instance, key) => {
+  const tag = ((instance && instance.Tags) || []).find(elem => elem.Key === key);
+  return tag && tag.Value;
+};
+
 // eslint-disable-next-line no-console
 const log = console.log;
 
@@ -21,8 +29,8 @@ function terminateRandomInstance(aws, settings, cb) {
     if (err) {
       return cb(err);
     }
-    const instanceIds = flatten(data.Reservations.map(reservation => reservation.Instances))
-      .map(instance => instance.InstanceId);
+    const instances = flatten(data.Reservations.map(reservation => reservation.Instances));
+    const instanceIds = instances.map(instance => instance.InstanceId);
     log(`Found ${instanceIds.length} instances (${instanceIds.join(', ')}).`);
 
     if (instanceIds.length === 0) {
@@ -31,7 +39,8 @@ function terminateRandomInstance(aws, settings, cb) {
     }
 
     const instance = getRandom(instanceIds);
-    log(`Terminate instance ${instance}.`);
+    const name = getTag(getInstanceById(instance, instances), 'Name');
+    log(`Terminate instance ${instance} (${name}).`);
 
     const terminateConfig = { InstanceIds: [instance] };
     return ec2.terminateInstances(terminateConfig, (terminateError, terminateResult) => {
