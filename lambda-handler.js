@@ -11,3 +11,8 @@ const config = {
 module.exports = {
   handler: (event, context, callback) => terminateRandomInstance(aws, config, callback),
 };
+
+if (!module.parent) {
+  // eslint-disable-next-line no-console
+  terminateRandomInstance(aws, config, console.log);
+}
