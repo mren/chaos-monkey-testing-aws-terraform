@@ -1,4 +1,5 @@
 variable "termination_probability" {}
+
 variable "project" {}
 
 provider "aws" {}
