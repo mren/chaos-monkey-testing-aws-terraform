@@ -91,3 +91,33 @@ resource "aws_iam_policy_attachment" "attach_ec2" {
   policy_arn = "${aws_iam_policy.ec2_access.arn}"
   roles      = ["${aws_iam_role.lambda.name}"]
 }
+
+resource "aws_iam_policy" "cloudwatch_access" {
+  name        = "${var.project}-lambda-cloudwatch-access"
+  description = "CloudWatch Access"
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+               "logs:CreateLogGroup",
+               "logs:CreateLogStream",
+               "logs:PutLogEvents"
+            ],
+            "Resource": [
+                "*"
+            ]
+        }
+    ]
+}
+EOF
+}
+
+resource "aws_iam_policy_attachment" "attach_cloudwatch" {
+  name       = "${var.project}-iam-attachment"
+  policy_arn = "${aws_iam_policy.cloudwatch_access.arn}"
+  roles      = ["${aws_iam_role.lambda.name}"]
+}
