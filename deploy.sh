@@ -8,7 +8,7 @@ set -eux
 : ${TERMINATION_PROBABILITY?"Should have TERMINATION_PROBABILITY"}
 
 function cleanup {
-  rm -rf node_modules/ lambda.zip config.json
+  rm -rf node_modules lambda.zip
 }
 trap cleanup EXIT
 cleanup
