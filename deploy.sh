@@ -4,7 +4,7 @@ set -eux
 
 : ${AWS_ACCESS_KEY_ID?"Should have AWS_ACCESS_KEY_ID"}
 : ${AWS_SECRET_ACCESS_KEY?"Should have AWS_SECRET_ACCESS_KEY"}
-: ${AWS_DEFAULT_REGION?"Should have AWS_DEFAULT_REGION"}
+: ${REGION?"Should have REGION"}
 : ${TERMINATION_PROBABILITY?"Should have TERMINATION_PROBABILITY"}
 
 function cleanup {
@@ -57,13 +57,13 @@ docker run \
   hashicorp/terraform:light remote config \
     -backend=s3 \
     -backend-config="bucket=$TERRAFORM_CONFIG_BUCKET" \
-    -backend-config="key=$PROJECT-$AWS_DEFAULT_REGION.tfstate" \
+    -backend-config="key=$PROJECT-$REGION.tfstate" \
     -backend-config="region=us-east-1"
 
 docker run \
   --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
   --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
-  --env AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION \
+  --env AWS_DEFAULT_REGION=$REGION \
   --env TF_VAR_termination_probability=$TERMINATION_PROBABILITY \
   --env TF_VAR_project=$PROJECT \
   --volume $(pwd):/project \

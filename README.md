@@ -27,6 +27,6 @@ State bucket named `my-chaos-testing-state-configuration` in region `us-east-1`.
 TERMINATION_PROBABILITY=0.1 \
 AWS_ACCESS_KEY_ID= \
 AWS_SECRET_ACCESS_KEY= \
-AWS_DEFAULT_REGION=us-west-2 \
+REGION=us-west-2 \
   ./deploy.sh
 ```
