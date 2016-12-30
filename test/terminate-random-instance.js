@@ -71,4 +71,21 @@ describe('terminate random instance', () => {
       done(err);
     });
   }));
+
+  it('should have a dry run mode', (done) => {
+    const settings = { terminationProbability: 1, region: 'region', dryRun: true };
+    const reservations = [
+      { Instances: [{ InstanceId: 'instanceId' }] },
+    ];
+    const ec2 = {
+      describeInstances: sinon.stub().yields(null, { Reservations: reservations }),
+      terminateInstances: sinon.stub().yields(),
+    };
+    const aws = { EC2: sinon.stub().returns(ec2) };
+    terminateRandomInstance(aws, settings, (err, result) => {
+      assert.strictEqual(result, 'dry-run');
+      sinon.assert.notCalled(ec2.terminateInstances);
+      done(err);
+    });
+  });
 });

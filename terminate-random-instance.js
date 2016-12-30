@@ -44,6 +44,9 @@ function terminateRandomInstance(aws, settings, cb) {
     log(`Terminate instance ${instance} (${name}).`);
 
     const terminateConfig = { InstanceIds: [instance] };
+    if (settings.dryRun) {
+      return cb(null, 'dry-run');
+    }
     return ec2.terminateInstances(terminateConfig, (terminateError, terminateResult) => {
       if (terminateError) {
         return cb(terminateError);

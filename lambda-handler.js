@@ -3,8 +3,9 @@ const aws = require('aws-sdk');
 const terminateRandomInstance = require('./terminate-random-instance');
 
 const config = {
-  terminationProbability: Number(process.env.TERMINATION_PROBABILITY),
+  dryRun: (process.env.DRY_RUN || '').toLowerCase() === 'true',
   region: process.env.REGION,
+  terminationProbability: Number(process.env.TERMINATION_PROBABILITY),
 };
 
 module.exports = {
