@@ -28,6 +28,7 @@ EOF
 }
 
 resource "aws_lambda_function" "lambda" {
+  description      = "On execution kills a ec2 instance in ${data.aws_region.current.name} with a probability of ${var.termination_probability}."
   filename         = "lambda.zip"
   function_name    = "${var.project}"
   handler          = "lambda-handler.handler"
