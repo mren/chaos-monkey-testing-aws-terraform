@@ -1,7 +1,9 @@
-variable "region" {}
+variable "termination_probability" {}
 
-provider "aws" {
-  region = "${var.region}"
+provider "aws" {}
+
+data "aws_region" "current" {
+  current = true
 }
 
 resource "aws_iam_role" "lambda" {
@@ -31,6 +33,13 @@ resource "aws_lambda_function" "lambda" {
   role             = "${aws_iam_role.lambda.arn}"
   runtime          = "nodejs4.3"
   source_code_hash = "${base64sha256(file("lambda.zip"))}"
+
+  environment {
+    variables {
+      PROBABILITY = "${var.termination_probability}"
+      REGION      = "${data.aws_region.current.name}"
+    }
+  }
 }
 
 resource "aws_lambda_permission" "allow_cloudwatch_to_call_scheduler" {
@@ -47,7 +56,7 @@ resource "aws_cloudwatch_event_rule" "every_hour" {
   schedule_expression = "rate(1 hour)"
 }
 
-resource "aws_cloudwatch_event_target" "scheduler_every_minute" {
+resource "aws_cloudwatch_event_target" "scheduler_every_hour" {
   rule = "${aws_cloudwatch_event_rule.every_hour.name}"
   arn  = "${aws_lambda_function.lambda.arn}"
 }

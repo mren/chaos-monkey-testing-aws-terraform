@@ -28,7 +28,5 @@ TERMINATION_PROBABILITY=0.1 \
 AWS_ACCESS_KEY_ID= \
 AWS_SECRET_ACCESS_KEY= \
 AWS_DEFAULT_REGION=us-west-2 \
-AWS_BUCKET_REGION=us-east-1 \
-TERRAFORM_CONFIG_BUCKET=my-chaos-testing-state-configuration \
   ./deploy.sh
 ```
