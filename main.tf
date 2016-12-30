@@ -1,4 +1,5 @@
 variable "termination_probability" {}
+variable "project" {}
 
 provider "aws" {}
 
@@ -7,7 +8,7 @@ data "aws_region" "current" {
 }
 
 resource "aws_iam_role" "lambda" {
-  name = "iam_for_lambda_chaos_testing"
+  name = "${var.project}-iam-for-lambda"
 
   assume_role_policy = <<EOF
 {
@@ -28,7 +29,7 @@ EOF
 
 resource "aws_lambda_function" "lambda" {
   filename         = "lambda.zip"
-  function_name    = "chaos-testing"
+  function_name    = "${var.project}"
   handler          = "lambda-handler.handler"
   role             = "${aws_iam_role.lambda.arn}"
   runtime          = "nodejs4.3"
@@ -43,7 +44,7 @@ resource "aws_lambda_function" "lambda" {
 }
 
 resource "aws_lambda_permission" "allow_cloudwatch_to_call_scheduler" {
-  statement_id  = "AllowExecutionFromCloudWatch"
+  statement_id  = "${var.project}-allow-execution-from-cloudwatch"
   action        = "lambda:InvokeFunction"
   function_name = "${aws_lambda_function.lambda.function_name}"
   principal     = "events.amazonaws.com"
@@ -51,7 +52,7 @@ resource "aws_lambda_permission" "allow_cloudwatch_to_call_scheduler" {
 }
 
 resource "aws_cloudwatch_event_rule" "every_hour" {
-  name                = "every_hour"
+  name                = "${var.project}-every-hour"
   description         = "Fires every hour"
   schedule_expression = "rate(1 hour)"
 }
@@ -62,7 +63,7 @@ resource "aws_cloudwatch_event_target" "scheduler_every_hour" {
 }
 
 resource "aws_iam_policy" "ec2_access" {
-  name        = "Ec2Access"
+  name        = "${var.project}-ec2-access"
   description = "Ec2 Access"
 
   policy = <<EOF
@@ -85,7 +86,7 @@ EOF
 }
 
 resource "aws_iam_policy_attachment" "attach_ec2" {
-  name       = "iam-attachment-ec2"
+  name       = "${var.project}-iam-attachment-ec2"
   policy_arn = "${aws_iam_policy.ec2_access.arn}"
   roles      = ["${aws_iam_role.lambda.name}"]
 }

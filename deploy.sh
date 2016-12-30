@@ -13,6 +13,8 @@ function cleanup {
 trap cleanup EXIT
 cleanup
 
+PROJECT=chaos-testing
+
 docker run \
   --volume $(pwd):/project \
   --workdir /project \
@@ -37,7 +39,7 @@ AWS_ACCOUNT_ID=`docker run \
   cgswong/aws:aws \
   sts get-caller-identity --output text --query 'Account'`
 
-TERRAFORM_CONFIG_BUCKET=chaos-monkey-tfstate-$AWS_ACCOUNT_ID
+TERRAFORM_CONFIG_BUCKET=$PROJECT-tfstate-$AWS_ACCOUNT_ID
 
 docker run \
   --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
@@ -55,7 +57,7 @@ docker run \
   hashicorp/terraform:light remote config \
     -backend=s3 \
     -backend-config="bucket=$TERRAFORM_CONFIG_BUCKET" \
-    -backend-config="key=chaos-testing-$AWS_DEFAULT_REGION.tfstate" \
+    -backend-config="key=$PROJECT-$AWS_DEFAULT_REGION.tfstate" \
     -backend-config="region=us-east-1"
 
 docker run \
@@ -63,6 +65,7 @@ docker run \
   --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
   --env AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION \
   --env TF_VAR_termination_probability=$TERMINATION_PROBABILITY \
+  --env TF_VAR_project=$PROJECT \
   --volume $(pwd):/project \
   --workdir /project \
   hashicorp/terraform:light apply
