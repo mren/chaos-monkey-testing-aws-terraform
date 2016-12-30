@@ -12,7 +12,7 @@ const getTag = (instance, key) => {
 };
 
 // eslint-disable-next-line no-console
-const log = console.log;
+const log = console.log.bind(console);
 
 function terminateRandomInstance(aws, settings, cb) {
   log('terminateRandomInstance', JSON.stringify(settings));
@@ -24,6 +24,7 @@ function terminateRandomInstance(aws, settings, cb) {
     log('No random instance will be terminated. Aborting.');
     return cb();
   }
+  log(`Will terminate an instance. Fetch available instances in region ${settings.region}.`);
   const ec2 = new aws.EC2({ region: settings.region });
   return ec2.describeInstances((err, data) => {
     if (err) {
