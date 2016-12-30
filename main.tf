@@ -36,6 +36,7 @@ resource "aws_lambda_function" "lambda" {
   role             = "${aws_iam_role.lambda.arn}"
   runtime          = "nodejs4.3"
   source_code_hash = "${base64sha256(file("lambda.zip"))}"
+  timeout          = 10
 
   environment {
     variables {
