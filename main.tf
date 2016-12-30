@@ -65,9 +65,9 @@ resource "aws_cloudwatch_event_target" "scheduler_every_hour" {
   arn  = "${aws_lambda_function.lambda.arn}"
 }
 
-resource "aws_iam_policy" "ec2_access" {
-  name        = "${var.project}-ec2-access"
-  description = "Ec2 Access"
+resource "aws_iam_policy" "policy" {
+  name        = "${var.project}-lambda-policy-access"
+  description = "Access is required to find instances, terminate instances and write logs."
 
   policy = <<EOF
 {
@@ -75,7 +75,10 @@ resource "aws_iam_policy" "ec2_access" {
     {
       "Action": [
         "ec2:DescribeInstances",
-        "ec2:TerminateInstances"
+        "ec2:TerminateInstances",
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
       ],
       "Effect": "Allow",
       "Resource": [
@@ -88,38 +91,8 @@ resource "aws_iam_policy" "ec2_access" {
 EOF
 }
 
-resource "aws_iam_policy_attachment" "attach_ec2" {
-  name       = "${var.project}-iam-attachment-ec2"
-  policy_arn = "${aws_iam_policy.ec2_access.arn}"
-  roles      = ["${aws_iam_role.lambda.name}"]
-}
-
-resource "aws_iam_policy" "cloudwatch_access" {
-  name        = "${var.project}-lambda-cloudwatch-access"
-  description = "CloudWatch Access"
-
-  policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-               "logs:CreateLogGroup",
-               "logs:CreateLogStream",
-               "logs:PutLogEvents"
-            ],
-            "Resource": [
-                "*"
-            ]
-        }
-    ]
-}
-EOF
-}
-
-resource "aws_iam_policy_attachment" "attach_cloudwatch" {
-  name       = "${var.project}-iam-attachment"
-  policy_arn = "${aws_iam_policy.cloudwatch_access.arn}"
+resource "aws_iam_policy_attachment" "attach_policy" {
+  name       = "${var.project}-iam-policy-attachment"
+  policy_arn = "${aws_iam_policy.policy.arn}"
   roles      = ["${aws_iam_role.lambda.name}"]
 }
